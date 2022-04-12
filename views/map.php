@@ -59,9 +59,10 @@ function fetchLocation(){
 }
 
 function fetchLocations(){
+    console.log(new Date().toLocaleString(), 'fetchLocations')
     let url = 'app.php';
     let data = {action: 'getdriverslocations'}
-    console.log('fetchLocations', data)
+    //console.log('fetchLocations', data)
     
     var data_ = []
     
@@ -69,7 +70,7 @@ function fetchLocations(){
         data_.push(`${id}=${data[id]}`)
     }
     data_ = data_.join('&')
-    console.log(data_)
+    //console.log(data_)
     
     document.body.style.outline = '1px solid red';
     var xhttp = new XMLHttpRequest();
@@ -113,7 +114,7 @@ function fetchLocations(){
 }
 
 function setMapCoords(id, lat, lng, name){
-        console.log('setMapCoords', id, lat, lng, name)
+        //console.log('setMapCoords', id, lat, lng, name)
         
         if (!map){
             map = L.map('map', {
@@ -127,7 +128,7 @@ function setMapCoords(id, lat, lng, name){
             markers[id] = L.marker([lat, lng]).addTo(map); 
             //markers[id].bindPopup(name).openPopup();   
             markers[id].bindTooltip(name,  {permanent: true, direction : 'bottom'});
-            console.log('#1')
+            //console.log('#1')
             
         } else {
             let newLatLng = new L.LatLng(lat, lng);
@@ -137,8 +138,8 @@ function setMapCoords(id, lat, lng, name){
                 newLatLng.lng == oldLatLng.lng){
                 //console.log('No change in position')
             } else {
-                console.log('#1')
-                console.log('Marker updated')
+                //console.log('#1')
+                //console.log('Marker updated')
                 markers[id].setLatLng(newLatLng);   //setLatLng([0,0])
                 markers[id].bindTooltip(name,  {permanent: true, direction : 'bottom'});
                 
@@ -148,7 +149,7 @@ function setMapCoords(id, lat, lng, name){
             }
         }
         
-        console.log(markers[id].getLatLng())
+        //console.log(markers[id].getLatLng())
 }	
 
 window.addEventListener('load', fetchLocations, false);

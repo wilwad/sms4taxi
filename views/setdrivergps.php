@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
  <html lang='en'>
   <head>
    <meta charset='utf-8'>
@@ -15,9 +15,10 @@
   ?>
  <div id='location'></div>
  <p>&nbsp;</p>
- <small>Your coordinates were sent to the server.</small>
+ <small id='success'></small>
  <script>
  let loc = document.querySelector('#location')
+ let success = document.querySelector('#success')
 var oldLatLng = {lat:0, lng:0}
 
 function getLocation() {
@@ -66,15 +67,19 @@ function updateServer(data){
     console.log(data_)
     
     document.body.style.outline = '1px solid red';
-    
+
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            console.log('server response:',this.responseText);
+            let resp = this.responseText
+            console.log('server response:', resp);
+            
+            if (resp.indexOf('true') > -1) success.innerText = 'Your coordinates were sent to the server.';
+            
             document.body.style.outline = 'initial';
         }
     };
-
+    success.innerText = '';
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(data_);

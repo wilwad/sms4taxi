@@ -90,7 +90,7 @@ function setMapCoords(id, lat, lng, name){
                 //console.log('#1')
                 //console.log('Marker updated')
                 markers[id].setLatLng(newLatLng);   //setLatLng([0,0])
-                markers[id].bindTooltip(name,  {permanent: true, direction : 'bottom'});
+                //markers[id].bindTooltip(name,  {permanent: true, direction : 'bottom'});
                 
                 //map.panTo(newLatLng);
                 //map.setCenter(newLatLng, zoom)

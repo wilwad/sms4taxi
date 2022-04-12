@@ -73,8 +73,8 @@ function updateServer(data){
         if (this.readyState == 4 && this.status == 200) {
             let resp = this.responseText
             console.log('server response:', resp);
-            
-            if (resp.indexOf('true') > -1) success.innerText = 'Your coordinates were sent to the server.';
+            let date = new Date().toLocaleString();
+            if (resp.indexOf('true') > -1) success.innerText = `Your coordinates were sent to the server @ ${date}`;
             
             document.body.style.outline = 'initial';
         }

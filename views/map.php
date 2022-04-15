@@ -4,14 +4,30 @@
     width: 96vw;
     height: 90vh;
 }   
+
+.drivers {
+    margin-top: 10px;
+}
+
+.drivers a {
+  margin: 0px 10px;
+  background-color: gray;
+  padding: 4px;
+  border-radius: 5px;
+  color: #FFF;
+}
 </style>
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin="" defer></script>       
-<div id='map'></div>
+<div>
+    <div id='map'></div>
+    <div id='drivers' class='drivers'></div>
+</div>
 
 <script>
 var map = undefined;
 var markers = {}
 let loc = document.querySelector('h2')
+let drivers = document.querySelector('#drivers')
 
 function fetchLocation(){
     let url = 'app.php';
@@ -82,6 +98,8 @@ function fetchLocations(){
             if ( resp.indexOf('error') > -1){
                 // failure
             } else {
+                drivers.innerHTML = '';
+                var li = ''
                 console.log(resp)
                 let data = JSON.parse(resp)
                 //console.log(data)
@@ -89,8 +107,11 @@ function fetchLocations(){
                     let lat = itm.latlng.split(',')[0]
                     let lng = itm.latlng.split(',')[1]
                     let drivername = `<b>${itm.name}</b> <BR> ${itm.lastupdate}`
+                    li += `<a href='#' onClick='panTo(${itm.driver_id}); return false;'>${itm.name}</a>`;
                     setMapCoords(itm.driver_id, lat, lng, drivername)
                 }
+                drivers.innerHTML = li;
+
                 /*
                 resp = resp.split(',')
                 let driverid  = resp[0].trim() 
@@ -111,6 +132,13 @@ function fetchLocations(){
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(data_);
+}
+
+function panTo(driverId){
+        let marker = markers[driverId];
+        if (!marker) return;
+       // map.panTo(marker.getLatLng());
+       map.flyTo(marker.getLatLng(), 16)
 }
 
 function setMapCoords(id, lat, lng, name){

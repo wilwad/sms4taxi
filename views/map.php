@@ -64,7 +64,7 @@ function fetchLocations(){
                     let lat = itm.latlng.split(',')[0]
                     let lng = itm.latlng.split(',')[1]
                     let drivername = `<b>${itm.name}</b> <BR> ${itm.lastupdate}`
-                    li += `<a href='#' onClick='panTo(${itm.driver_id}); return false;'>${itm.name}</a>`;
+                    li += `<a href='#' onClick='panToDriver(${itm.driver_id}); return false;'>${itm.name}</a>`;
                     setMapCoords(itm.driver_id, lat, lng, drivername)
                 }
                 drivers.innerHTML = li;
@@ -80,7 +80,7 @@ function fetchLocations(){
     xhttp.send(data_);
 }
 
-function panTo(driverId){
+function panToDriver(driverId){
         let marker = markers[driverId];
         if (!marker) return;
        map.flyTo(marker.getLatLng(), zoom)

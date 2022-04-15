@@ -24,58 +24,13 @@
 </div>
 
 <script>
-var map = undefined;
+var map     = undefined;
 var markers = {}
-let loc = document.querySelector('h2')
+let zoom    = 16;
+let loc     = document.querySelector('h2')
 let drivers = document.querySelector('#drivers')
 
-function fetchLocation(){
-    let url = 'app.php';
-    let data = {action: 'getdriverlocation', driverid: 1}
-    console.log('fetchLocation', data)
-    
-    var data_ = []
-    
-    for(let id in data){
-        data_.push(`${id}=${data[id]}`)
-    }
-    data_ = data_.join('&')
-    console.log(data_)
-    
-    document.body.style.outline = '1px solid red';
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            let resp = this.responseText
-            console.log('server response:', resp);
-            if ( resp.indexOf('error') > -1){
-                // failure
-            } else {
-                console.log(resp)
-                
-                resp = resp.split(',')
-                let driverid  = resp[0].trim() 
-                let lat = resp[1].trim()
-                let lng = resp[2].trim()
-                let lastupdate = resp[3].trim()
-                let driver = resp[4].trim()
-                let drivername = `Driver ${driver} <BR> ${lastupdate}`
-                
-                loc.innerHTML = `<u>Taxi Driver </u> @ ${lat},${lng} on <u>${lastupdate}</u>`
-                setMapCoords(driverid, lat, lng, drivername)
-            }
-            
-            document.body.style.outline = 'initial';
-        }
-    };
-
-    xhttp.open("POST", url, true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(data_);
-}
-
 function fetchLocations(){
-    console.log(new Date().toLocaleString(), 'fetchLocations')
     let url = 'app.php';
     let data = {action: 'getdriverslocations'}
     //console.log('fetchLocations', data)
@@ -88,7 +43,9 @@ function fetchLocations(){
     data_ = data_.join('&')
     //console.log(data_)
     
-    document.body.style.outline = '1px solid red';
+    // we are busy
+    document.body.style.outline = '2px solid red';
+
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -111,20 +68,9 @@ function fetchLocations(){
                     setMapCoords(itm.driver_id, lat, lng, drivername)
                 }
                 drivers.innerHTML = li;
-
-                /*
-                resp = resp.split(',')
-                let driverid  = resp[0].trim() 
-                let lat = resp[1].trim()
-                let lng = resp[2].trim()
-                let lastupdate = resp[3].trim()
-                let driver = resp[4].trim()
-                let drivername = `Driver ${driver} <BR> ${lastupdate}`
-                
-                setMapCoords(driverid, lat, lng, drivername)
-                */
             }
             
+            // no longer busy
             document.body.style.outline = 'initial';
         }
     };
@@ -137,13 +83,10 @@ function fetchLocations(){
 function panTo(driverId){
         let marker = markers[driverId];
         if (!marker) return;
-       // map.panTo(marker.getLatLng());
-       map.flyTo(marker.getLatLng(), 16)
+       map.flyTo(marker.getLatLng(), zoom)
 }
 
 function setMapCoords(id, lat, lng, name){
-        //console.log('setMapCoords', id, lat, lng, name)
-        
         if (!map){
             map = L.map('map', {
             center: [lat, lng],
@@ -166,18 +109,11 @@ function setMapCoords(id, lat, lng, name){
                 newLatLng.lng == oldLatLng.lng){
                 //console.log('No change in position')
             } else {
-                //console.log('#1')
                 //console.log('Marker updated')
-                markers[id].setLatLng(newLatLng);   //setLatLng([0,0])
-                markers[id].setTooltipContent(name)//,  {permanent: true, direction : 'bottom'});
-                
-                //map.panTo(newLatLng);
-                //map.setCenter(newLatLng, zoom)
-                //updateServer(`${lat},${lng}`);
+                markers[id].setLatLng(newLatLng);
+                markers[id].setTooltipContent(name)
             }
         }
-        
-        //console.log(markers[id].getLatLng())
 }	
 
 window.addEventListener('load', fetchLocations, false);

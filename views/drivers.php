@@ -2,8 +2,7 @@
  /*
   * handling of the drivers
  */
- $icon_person = $settings->icons_person;
- $icon_play   = $settings->icons_play;
+ $icon_cog   = $settings->icons_cog;
   			
  // when you click a Submit button on the forms
  // called during add
@@ -103,13 +102,12 @@ if (isset($_POST['edit'])){
             $ret = $mydb->generateForm( $settings->tables_drivers);        
             if ($ret['ok']){ 
                 $body     = [];
-                $ignored  = ['driver_id', 'user_id', 'entrydate'];        
-                $required = ['name', 'cellphone']; // these values in the array will have the required property added to the input field
+
                 foreach($ret['data'] as $id=>$v){
                         $c = @$comments[$id] ? $comments[$id] : ucwords($id);
-                        $req = in_array($id, $required) ? "required='required'" : "";
+                        $req = in_array($id, $settings->required_drivers) ? "required='required'" : "";
                         $requiredstar = $req ? "<span class='color_red'>*</span>" : '';
-                        if (in_array($id, $ignored)) continue;
+                        if (in_array($id, $settings->ignored_drivers)) continue;
         
                         $type = $metadata[$id]['type'];
                         $size = $mydb->numbersFromString($type);                        
@@ -203,14 +201,12 @@ if (isset($_POST['edit'])){
 		    
 		    if ($ret['ok']){ 
 		        $body     = [];
-		        $ignored  = ['driver_id', 'user_id', 'entrydate'];        
-		        $required = ['name', 'cellphone']; 
 		        
 		        foreach($ret['data'] as $id=>$v){
 		                $c = @$comments[$id] ? $comments[$id] : ucwords($id);
-		                $req = in_array($id, $required) ? "required='required'" : "";
+		                $req = in_array($id, $settings->required_drivers) ? "required='required'" : "";
 		                $requiredstar = $req ? "<span class='color_red'>*</span>" : '';
-		                if (in_array($id, $ignored)) continue;
+		                if (in_array($id, $settings->ignored_drivers)) continue;
 		
                         $type = @$metadata[$id]['type'];
                         $size = $mydb->numbersFromString($type);                        
@@ -392,12 +388,17 @@ if (isset($_POST['edit'])){
 				$th .= "<th>$col</th>";
 			}
 			// extra th
-			$th .= "<th>Actions</th>";
+			$th .= "<th>$icon_cog</th>";
 
 			$idx = 0;
+			$server_url = $_SERVER['SERVER_NAME'];
 			
 			foreach($rows as $row){
-				$td .= "<tr>";
+				
+ 				$driverid = $row['id'];
+ 				$name     = $row['name'];
+ 				
+ 				$td .= "<tr onclick=\"setDriverLink($driverid, '$name');\">";
  				
 				foreach($cols as $col){
 				    if (in_array($col, $ignore)) continue; // don't show this field on the html form
@@ -405,7 +406,7 @@ if (isset($_POST['edit'])){
 				    $td .= "<td>$val</td>";
 				}       
 				// actions 
-				$driverid = $row['id'];
+				
                 $actions = $settings->html_actions_drivers;
                 $actions = str_replace('{driverid}', $driverid, $actions);
                 				
@@ -418,12 +419,19 @@ if (isset($_POST['edit'])){
 			echo "<tbody>$td</tbody>";
 			echo "</table>";   
 			echo $settings->html_p;
-			echo "<small>";
-			echo "Give this link to each taxi driver: <BR> https://namcloud.com/sms4taxi/views/setdrivergps.php?id={id}";
+			echo "<small id='driverlink'>";			
+			echo "Click a driver row to get the driver GPS update link.";
 			echo "</small>";
 			
 			// use javascript to confirm if we want to delete record
             echo "<script>
+                    let driverlink = document.querySelector('#driverlink');
+                    let url = 'https://$server_url/views/setdrivergps.php?id=';
+                    
+                    function setDriverLink(driverId, name){
+                        driverlink.innerHTML = `<b>\${name}</b> vehicle GPS update link: <BR> \${url}\${driverId}`;
+                    }
+                    
                     function confirmDelete(id){
                         if (confirm('Delete the selected record?')){
                             window.location.href = '?view=drivers&action=delete&id='+id;

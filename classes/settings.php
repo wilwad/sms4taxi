@@ -9,8 +9,8 @@ class settings {
         // database connection
         public $database_host  = 'localhost';
         public $database_name  = 'sms4taxi';
-        public $database_user  = 'sms4taxi';
-        public $database_pwd   = '';
+        public $database_user  = 'root';
+        public $database_pwd   = 'Admin.2015!';
 
          // tables
         public $tables_drivers  = 'drivers';
@@ -18,6 +18,14 @@ class settings {
         public $tables_driverlocations = 'driver_locations';
         public $tables_requests = 'requests';
                                 
+        // ignored 
+        public $ignored_drivers   = [ 'driver_id', 'user_id', 'entrydate' ];      
+        public $ignored_requests  = [ 'request_id', 'user_id', 'entrydate', 'sms', 'driver_id', 'time_pick', 'time_dropoff'];
+                
+        // required
+        public $required_drivers  = [ 'name', 'cellphone'];
+        public $required_requests = [ 'name', 'cellphone'];
+                                        
          // errors         
         public $error_norequests  = "No request(s) found";
         public $error_nodrivers   = "No driver(s) found";
@@ -47,7 +55,7 @@ class settings {
 										 <a href='#' onclick='return confirmDelete({requestid});'>Delete</a>";
 
         // font awesome icons
-        public $icons_person = "<span class='fa fa-fw fa-user'></span>";
+        public $icons_cog    = "<span class='fa fa-fw fa-cog'></span>";
         public $icons_bank   = "<span class='fa fa-fw fa-bank'></span>";
         public $icons_list   = "<span class='fa fa-fw fa-list'></span>";
         public $icons_play   = "<span class='fa fa-fw fa-play'></span>";
@@ -64,9 +72,9 @@ class settings {
                                         (case when l.lastupdate is null then '' else l.lastupdate end) as lastupdate
                                     FROM
                                         drivers d
-                                        LEFT   JOIN
+                                        LEFT JOIN
                                         driver_locations l ON d.driver_id = l.driver_id
-                                    ORDE BY d.name ASC;"; 
+                                    ORDER BY d.name ASC;"; 
 	
 		public $sql_getdriverslocations = "SELECT 
                                                 l.driver_id, d.name, l.latlng, l.lastupdate
@@ -85,7 +93,7 @@ class settings {
 		
 		public $sql_getpendingrequests = "SELECT *
 										  FROM requests
-										  WHERE driver_id <> 0;";
+										  WHERE driver_id <> 0 ORDER BY entrydate DESC;";
                 									
         public $sql_getrequestsfordriver = "SELECT * 
         									FROM requests 

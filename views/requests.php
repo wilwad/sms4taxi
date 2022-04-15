@@ -2,8 +2,7 @@
  /*
   * handling of the requests operations
  */
- $icon_person = $settings->icons_person;
- $icon_play   = $settings->icons_play;
+ $icon_cog   = $settings->icons_cog;
   			
  // when you click a Submit button on the forms
  // called during add
@@ -113,13 +112,12 @@ if (isset($_POST['edit'])){
             $ret = $mydb->generateForm( $settings->tables_requests);        
             if ($ret['ok']){ 
                 $body     = [];
-                $ignored  = ['request_id', 'user_id', 'entrydate'];        
-                $required = ['name', 'cellphone']; // these values in the array will have the required property added to the input field
+
                 foreach($ret['data'] as $id=>$v){
                         $c = @$comments[$id] ? $comments[$id] : ucwords($id);
-                        $req = in_array($id, $required) ? "required='required'" : "";
+                        $req = in_array($id, $settings->required_requests) ? "required='required'" : "";
                         $requiredstar = $req ? "<span class='color_red'>*</span>" : '';
-                        if (in_array($id, $ignored)) continue;
+                        if (in_array($id, $settings->ignored_requests)) continue;
         
                         $type = $metadata[$id]['type'];
                         $size = $mydb->numbersFromString($type);                        
@@ -213,14 +211,12 @@ if (isset($_POST['edit'])){
 		    
 		    if ($ret['ok']){ 
 		        $body     = [];
-		        $ignored  = ['request_id', 'user_id', 'entrydate'];        
-		        $required = ['name', 'cellphone']; 
 		        
 		        foreach($ret['data'] as $id=>$v){
 		                $c = @$comments[$id] ? $comments[$id] : ucwords($id);
-		                $req = in_array($id, $required) ? "required='required'" : "";
+		                $req = in_array($id, $settings->required_requests) ? "required='required'" : "";
 		                $requiredstar = $req ? "<span class='color_red'>*</span>" : '';
-		                if (in_array($id, $ignored)) continue;
+		                if (in_array($id, $settings->ignored_requests)) continue;
 		
                         $type = @$metadata[$id]['type'];
                         $size = $mydb->numbersFromString($type);                        
@@ -355,17 +351,16 @@ if (isset($_POST['edit'])){
 		   
 		} else {
 	
-			$ignore = ['request_id', 'user_id'];
 			$cols = $result['data']['cols'];
 			$rows = $result['data']['rows'];
 			$th = ''; $td = '';
 
 			foreach($cols as $col){
-			    if (in_array($col, $ignore)) continue; // don't show this field on the html form
+			    if (in_array($col, $settings->ignored_requests)) continue; 
 				$th .= "<th>$col</th>";
 			}
 			// extra th
-			$th .= "<th>Actions</th>";
+			$th .= "<th>$icon_cog</th>";
 
 			$idx = 0;
 			
@@ -373,10 +368,8 @@ if (isset($_POST['edit'])){
 				$td .= "<tr>";
  				
 				foreach($cols as $col){
-				    if (in_array($col, $ignore)) continue; // don't show this field on the html form
-  
+				    if (in_array($col, $settings->ignored_requests)) continue;   
 				    $val = $row[$col];
-				    //if ($col == 'Title') $val = "<a href='#' class='youtube-driver' onclick=\"queuedriver($idx);\" data-youtube-id=\"$id\">$val</a>";
 				    $td .= "<td>$val</td>";
 				}       
 				// actions 

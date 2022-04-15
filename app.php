@@ -68,7 +68,7 @@
                 }
 
                 // sanity check
-                if (!$ret['rows']) die('error: no data');
+                if (!$ret['total_rows']) die('error: no data');
 
                 $json = [];
                 foreach($ret['data']['rows'] as $row){

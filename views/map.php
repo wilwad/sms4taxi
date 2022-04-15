@@ -1,24 +1,33 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
 <style>
 #map {
-    width: 96vw;
+    width: 100%;
     height: 90vh;
 }   
 
+.main {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "map drivers";
+}
+
 .drivers {
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
 }
 
 .drivers a {
-  margin: 0px 10px;
+    margin-top: 10px;
   background-color: gray;
   padding: 4px;
   border-radius: 5px;
   color: #FFF;
+  text-align: center;
 }
 </style>
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin="" defer></script>       
-<div>
+<div class='main'>
     <div id='map'></div>
     <div id='drivers' class='drivers'></div>
 </div>

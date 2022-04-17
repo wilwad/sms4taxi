@@ -73,5 +73,17 @@ function setMapCoords(lat, lng){
         }
 }	
 
+function calculateDistance(lat1, lon1, lat2, lon2){
+        const EARTH_RADIUS = 6371000;
+        const toRad        = function(num){return num*Math.PI/180};
+
+        var dLat = toRad(lat2 - lat1);
+        var dLon = toRad(lon2 - lon1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(lat1)) *
+                Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var distance = EARTH_RADIUS * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return distance;
+}
+
 window.addEventListener('load', getLocation, false);
 window.setInterval(getLocation, 60000); 

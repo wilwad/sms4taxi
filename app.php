@@ -3,15 +3,12 @@
  * This handles POST requests from AJAX
  * 
  * parameters:
- *      action: updategps, driverid: integer, lat: GPS_lat, lng: GPST_lng
- *      action: getdriverlocation, driverid: integer
- *      action: getdriverslocations, no_parameters expected
+ *      action: updategps, required_fields: driverid: integer, lat: GPS_lat, lng: GPST_lng
+ *      action: getdriverlocation, required_fields: driverid: integer
+ *      action: getdriverslocations, required_fields: no_parameters expected
  * 
  */
 
-  // corret date
-  date_default_timezone_set('Africa/Windhoek');
-  
   //if ( $settings->showPHPerrors ){
     ini_set('display_startup_errors',1);
     ini_set('display_errors',1);
@@ -25,6 +22,9 @@
         require('classes/CRUD.php');
         require('classes/App.php');
         $settings = new settings();
+
+        // correct date
+        date_default_timezone_set( $settings->timezone);        
         $app = new App( $settings );  
         
         switch ($action){

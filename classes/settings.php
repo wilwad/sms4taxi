@@ -5,6 +5,9 @@
 class settings {
         public $title          = 'sms4taxi';     
         public $showPHPerrors  = true;
+
+        // timezone
+        public $timezone       = 'Africa/Windhoek';
         
         // database connection
         public $database_host  = 'localhost';

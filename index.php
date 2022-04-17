@@ -1,18 +1,19 @@
  <?php
- // correct date
-  date_default_timezone_set('Africa/Windhoek');
-  
+  //if ( $settings->showPHPerrors ){
+    ini_set('display_startup_errors',1);
+    ini_set('display_errors',1);
+    error_reporting(-1);  
+  //}  
+
   require('classes/settings.php');
   require('classes/CRUD.php');
   require('classes/CForm.php');  
   require('classes/App.php');  
+  
   $settings = new settings();
   
-  if ( $settings->showPHPerrors ){
-    ini_set('display_startup_errors',1);
-    ini_set('display_errors',1);
-    error_reporting(-1);  
-  }  
+  // correct date
+  date_default_timezone_set( $settings->timezone);  
 
   $app = new App( $settings );  
  ?>
